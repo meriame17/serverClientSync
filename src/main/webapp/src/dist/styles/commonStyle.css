@@ -1,0 +1,45 @@
+.nav-header {
+    padding: 20px 15px !important;
+    background-image: none !important;
+    background-color: #1c84c6bf !important;
+}
+
+
+.nav > li.active{
+    border-left: 4px solid #1c84c6 !important;
+}
+
+
+.pace .pace-progress{
+  background: #1c84c6 !important;
+  height: 2.5px !important;
+}
+
+body.mini-navbar .nav-header{
+  background-color: #1c84c6 !important;
+}
+
+.white-bg {
+    background-color: #ffffff !important;
+}
+
+.nav.navbar-right > li > a {
+    color: #304151;
+    font-size: 13px;
+}
+
+/*header*/
+.row.wrapper.border-bottom.navigation-path.page-heading {
+  padding-top: 2px;
+  padding-bottom: 2px;
+    background-color: white;
+    border-radius: 0;
+    border-bottom: 3px solid black;
+}
+
+.footer {
+    background: none repeat scroll 0 0 #ffffff;
+}
+.footerClass{
+  color: #2f4050;
+}
