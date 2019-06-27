@@ -34,6 +34,9 @@ public class User {
     @Column(name="email")
     private String email;
     
+    @OneToMany(mappedBy="UserParent", fetch = FetchType.LAZY)
+    private Set<UpdatesHistory> updates;
+
     
     @Column(name="lastUpdate")
     private Date lastUpdate;
@@ -89,6 +92,14 @@ public class User {
 
 	public void setLastUpdate(Date lastUpdate) {
 		this.lastUpdate = lastUpdate;
+	}
+
+	public Set<UpdatesHistory> getUpdates() {
+		return updates;
+	}
+
+	public void setUpdates(Set<UpdatesHistory> updates) {
+		this.updates = updates;
 	}
     
 

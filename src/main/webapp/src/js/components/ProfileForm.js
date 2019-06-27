@@ -6,14 +6,11 @@ import Websocket from 'react-websocket';
 import SockJsClient from 'react-stomp'
 import UserService from '../api/UserService'
 import autoBind from 'react-autobind'
+import _ from 'lodash'
 var formData = new FormData()
 var userId= localStorage.getItem('idUser')
 
 
- function syncBackendLocal(){
-
-
- }
 
 export class ProfileForm extends React.Component {
     constructor(props) {
@@ -24,7 +21,7 @@ export class ProfileForm extends React.Component {
             email:'',
             avatar:'',
             clientConnected:false,
-            userUptoDate: true, 
+            updateSent: true, 
             lastUpdateDate:''
         };
 
@@ -75,16 +72,17 @@ handleMessage(data){
   }
 }
   handleSave() {
-      this.setState({userUptoDate:false})
+      this.setState({updateSent:false})
     formData.append('name', this.state.name)
     formData.append('email', this.state.email)
     formData.append('avatar', this.state.avatar)
+    formData.append('updateDate', new Date())
 
 if(this.state.clientConnected){
     UserService.update(userId, formData, this.updateCallback)
 
 }else{
-    this.setState({userUptoDate: false})
+    this.setState({updateSent: false})
     localStorage.setItem('name',this.state.name)
     localStorage.setItem('email',this.state.email)
     localStorage.setItem('avatar', this.state.avatar)
@@ -92,33 +90,45 @@ if(this.state.clientConnected){
 
 }
 
-      this.props.db.put({
-          _id: new Date().toJSON(),
-          data: formData
-      });
+
   }
 
   updateCallback(res){
       if(res){
-          this.setState({userUptoDate: true})
+          this.setState({updateSent: true})
       }
   }
   synchronize(){
-      if(!this.state.userUptoDate ){
-        UserService.getUserInfo(userId, this.userInfoCallback)
-    if (this.state.date.getTime() < localStorage.getItem('updateDate'))
-    {
+      if(!this.state.updateSent ){
+   
         formData.append('name', localStorage.getItem('name'))
         formData.append('email', localStorage.getItem('email'))
         formData.append('avatar', localStorage.getItem('avatar') )
+        formData.append('updateDate', localStorage.getItem('updateDate') )
+
     
         UserService.update(userId, formData, this.updateCallback)
+        this.setState({updateSent: true})
 
-    }else{
-        this.setState({userUptoDate: true})
+        ///Share updates with clients 
+        UserService.getHistory(userId,  this.updateHistoryCallback)
+
     }
       
-  }}
+  }
+  updateHistoryCallback(response){
+    var nameUpdates=_.orderBy(_.find(response, function(o) { return o.fieldName == 'name'; }), [function(o) { return o.dateUpdate; }],['desc'])
+    var emailUpdates=_.orderBy(_.find(response, function(o) { return o.fieldName == 'email'; }), [function(o) { return o.dateUpdate; }],['desc'])
+    var   avatarUpdates=  _.orderBy(_.find(response, function(o) { return o.fieldName == 'avatar'; }), [function(o) { return o.dateUpdate; }],['desc'])
+this.setState({
+    name:_.head(nameUpdates).value,
+    email:_.head(emailUpdates).value,
+    avatar:_.head(avatarUpdates).value
+
+})
+
+
+}
 
     render() {
         return (
