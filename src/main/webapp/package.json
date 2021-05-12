@@ -12,7 +12,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "bootstrap": "^3.3.7",
-    "chart.js": "^1.1.1",
+    "chart.js": "^2.9.4",
     "cldr-core": "33.0.0",
     "cldr-dates-full": "33.0.0",
     "cldr-numbers-full": "33.0.0",
